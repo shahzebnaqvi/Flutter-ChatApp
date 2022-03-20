@@ -37,6 +37,13 @@ class _ChatpageState extends State<Chatpage> {
     });
   }
 
+  void didupdateWidget(Chatpage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    Timer.periodic(Duration(milliseconds: 1), (timer) {
+      getdata();
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
