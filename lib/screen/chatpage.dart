@@ -1,4 +1,6 @@
 // import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:chatapp/model/chat_model.dart';
 import '../service/chat_service.dart';
@@ -27,6 +29,13 @@ class _ChatpageState extends State<Chatpage> {
   final myControllerMsg = TextEditingController();
   DateTime _now = DateTime.now();
   // @overrid
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(milliseconds: 1), (timer) {
+      getdata();
+    });
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,8 +64,6 @@ class _ChatpageState extends State<Chatpage> {
                         snap.hasData) {
                       return ListView.builder(
                           reverse: true,
-                          // physics: NeverScrollableScrollPhysics(),
-                          // shrinkWrap: true,
                           itemCount: snap.data.length,
                           itemBuilder: (context, index) {
                             if ('${snap.data[index].person}' ==
@@ -155,7 +162,9 @@ class _ChatpageState extends State<Chatpage> {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    return Container();
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
                   },
                 ),
               ),
@@ -212,7 +221,9 @@ class _ChatpageState extends State<Chatpage> {
                           print("test");
                           fetchUsers(
                               myControllerMsg.value.text, widget.chatman);
-                          getdata();
+                          Timer.periodic(Duration(milliseconds: 1), (timer) {
+                            getdata();
+                          });
                           myControllerMsg.clear();
                         },
                         child: Icon(

@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:chatapp/model/chat_model.dart';
 
 Stream getdata() async* {
+  Duration interval = Duration(seconds: 1);
+
   var response = await http
       .get(Uri.parse('http://waleeddeevloopers.9am.website/message.php'));
   var jsonData = jsonDecode(response.body);
-  print(jsonData);
 
   List<Chatmessage> users = [];
   for (var i = 0; i < jsonData.length; i++) {
@@ -16,6 +17,7 @@ Stream getdata() async* {
         person: jsonData[i]['person'],
         message: jsonData[i]['message']);
     users.add(user);
+
     // print(user);
     // yield user;
   }
