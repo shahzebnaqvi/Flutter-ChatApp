@@ -9,16 +9,13 @@ class Chatpage extends StatefulWidget {
   const Chatpage({
     Key? key,
     required this.chatman,
-    // required this.chatmanname,
-    // required this.imgaelink
   }) : super(key: key);
   final String chatman;
-  // final String chatmanname;
-  // final String imgaelink;
-
   @override
   _ChatpageState createState() => _ChatpageState();
 }
+
+bool selectuser = true;
 
 class _ChatpageState extends State<Chatpage> {
   double lefts = 0;
@@ -35,52 +32,19 @@ class _ChatpageState extends State<Chatpage> {
     return Scaffold(
         appBar: AppBar(
           titleSpacing: 0.0,
-          backgroundColor: Color(0xFF1F1A30),
           title: Row(
             children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    right: MediaQuery.of(context).size.height * 0.02),
-                child: CircleAvatar(
-                    // backgroundImage: NetworkImage(widget.imgaelink),
-                    ),
+              Text(
+                "${widget.chatman}",
               ),
-              Text("${widget.chatman}",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22)),
             ],
           ),
         ),
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          color: Color(0xFF1F1A30),
           child: Column(
             children: [
-              // FutureBuilder(builder: builder)
-              // SizedBox(
-              //   height: 20,
-              // ),
-              // Padding(
-              //   padding: EdgeInsets.only(
-              //       bottom: MediaQuery.of(context).size.height * 0,
-              //       top: MediaQuery.of(context).size.height * 0.005),
-              //   child: Align(
-              //     alignment: Alignment.topLeft,
-              //     child: Padding(
-              //       padding: EdgeInsets.only(
-              //           top: MediaQuery.of(context).size.width * 0.06,
-              //           left: MediaQuery.of(context).size.width * 0.06),
-              //       // child: Text("${widget.chatmanname}",
-              //       //     style: TextStyle(
-              //       //         color: Colors.white,
-              //       //         fontWeight: FontWeight.bold,
-              //       //         fontSize: 30)),
-              //     ),
-              //   ),
-              // ),
               Expanded(
                 child: StreamBuilder(
                   stream: getdata(),
@@ -89,15 +53,102 @@ class _ChatpageState extends State<Chatpage> {
                       return Text("Error");
                     } else if (snap.connectionState == ConnectionState.done &&
                         snap.hasData) {
-                      return InkWell(
-                        child: CircleAvatar(
-                          backgroundColor: Colors.pink,
-                        ),
-                      );
-                      //Container(width: 300,height: 450,
-                      // child: Image.network(snap.data!,
-                      // fit: BoxFit.cover,),
-
+                      return ListView.builder(
+                          reverse: true,
+                          // physics: NeverScrollableScrollPhysics(),
+                          // shrinkWrap: true,
+                          itemCount: snap.data.length,
+                          itemBuilder: (context, index) {
+                            if ('${snap.data[index].person}' ==
+                                "${widget.chatman}") {
+                              selectuser = true;
+                            } else {
+                              selectuser = false;
+                            }
+                            return Column(children: [
+                              Container(
+                                  margin: EdgeInsets.only(
+                                    top: MediaQuery.of(context).size.width *
+                                        0.05,
+                                    left: selectuser
+                                        ? MediaQuery.of(context).size.width *
+                                            0.25
+                                        : MediaQuery.of(context).size.width *
+                                            0.05,
+                                    right: selectuser
+                                        ? MediaQuery.of(context).size.width *
+                                            0.05
+                                        : MediaQuery.of(context).size.width *
+                                            0.25,
+                                  ),
+                                  padding: EdgeInsets.only(
+                                      bottom:
+                                          MediaQuery.of(context).size.width *
+                                              0.01,
+                                      right: MediaQuery.of(context).size.width *
+                                          0.01,
+                                      top: MediaQuery.of(context).size.width *
+                                          0.05),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        selectuser ? Colors.blue : Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 5,
+                                        blurRadius: 7,
+                                        offset: Offset(
+                                            0, 3), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.90,
+                                  child: Container(
+                                      padding: EdgeInsets.only(
+                                          right: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.01,
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.05),
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            RichText(
+                                              text: TextSpan(
+                                                text:
+                                                    '${snap.data[index].message}',
+                                                style: TextStyle(
+                                                    color: selectuser
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    fontSize: 18.0),
+                                              ),
+                                            ),
+                                            Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                      " ${snap.data[index].createTime}",
+                                                      style: TextStyle(
+                                                          color: selectuser
+                                                              ? Colors.white
+                                                              : Colors.black,
+                                                          fontSize: 13.0)),
+                                                ])
+                                          ])))
+                            ]);
+                          });
                     }
                     if (snap.connectionState == ConnectionState.waiting) {
                       return CircleAvatar(
@@ -109,99 +160,13 @@ class _ChatpageState extends State<Chatpage> {
                 ),
               ),
 
-              // Expanded(
-              //   child: StreamBuilder<Chatmessage>(
-              //     stream: getdata(),
-              //     builder: (BuildContext context,
-              //         AsyncSnapshot<Chatmessage> snapshot) {
-              //       if (snapshot.hasError) {
-              //         return Text("Error");
-              //       }
-              //       if (snapshot.connectionState == ConnectionState.waiting) {
-              //         return Center(
-              //           child: CircularProgressIndicator(),
-              //         );
-              //       }
-
-              //       // var kk ;
-
-              //       return Padding(
-              //         padding: EdgeInsets.only(
-              //             left: MediaQuery.of(context).size.width * 0.06,
-              //             right: MediaQuery.of(context).size.width * 0.06),
-              //         child: ListView(
-              //           reverse: true,
-              // children: snapshot.data!.docs
-              //     .map((DocumentSnapshot document) {
-              //   Map<String, dynamic> data =
-              //       document.data()! as Map<String, dynamic>;
-              //   if (1==1) {
-              //     lefts = 0;
-              //     rights = 0.2;
-              //     fieldColor = Color(0xFF39304d);
-              //     textColor = Colors.white;
-              //     dateColor = Colors.white70;
-              //   } else {
-              //     lefts = 0.2;
-              //     rights = 0;
-              //     fieldColor = Color(0xFF0CF6E3);
-              //     textColor = Color(0xFF1F1A30);
-              //     dateColor = Colors.black87;
-              //   }
-              //   DateTime myDateTime = (data['time2']).toDate();
-
-              //   return Container(
-              //     margin: EdgeInsets.only(
-              //         top: MediaQuery.of(context).size.height * 0.02,
-              //         left: MediaQuery.of(context).size.width * lefts,
-              //         right:
-              //             MediaQuery.of(context).size.width * rights),
-              //     decoration: BoxDecoration(
-              //       color: fieldColor,
-              //       borderRadius: BorderRadius.circular(20),
-              //       // boxShadow: [
-              //       //   BoxShadow(
-              //       //     color: Color(0xFF39304d),
-              //       //     blurRadius: 10,
-              //       //     offset: Offset(0, 0), // Shadow position
-              //       //   ),
-              //       // ],
-              //     ),
-              //     child: ListTile(
-              //       title: Text(
-              //         data['message'],
-              //         style: TextStyle(color: textColor),
-              //       ),
-              //       trailing: Padding(
-              //         padding: EdgeInsets.only(
-              //             bottom: MediaQuery.of(context).size.height *
-              //                 0.008),
-              //         child: Column(
-              //           mainAxisAlignment: MainAxisAlignment.end,
-              //           children: [
-              //             Text(
-              //               // DateTime.parse(timestamp.toDate().toString()),
-              //               "ooo",
-              //               style: TextStyle(color: dateColor),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     ),
-              //   );
-              // }).toList(),
-              //         ),
-              //       );
-              //     },
-              //   ),
-              // ),
               Container(
                 margin: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height * 0.02),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.width * 0.15,
                 decoration: BoxDecoration(
-                  color: Color(0xFF39304d),
+                  color: Colors.blue,
                   // borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -213,7 +178,7 @@ class _ChatpageState extends State<Chatpage> {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFF1F1A30),
+                    color: Colors.blue,
                     // borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -245,7 +210,10 @@ class _ChatpageState extends State<Chatpage> {
                         onTap: () {
                           // addData();
                           print("test");
-                          print(getdata());
+                          fetchUsers(
+                              myControllerMsg.value.text, widget.chatman);
+                          getdata();
+                          myControllerMsg.clear();
                         },
                         child: Icon(
                           Icons.send_rounded,
