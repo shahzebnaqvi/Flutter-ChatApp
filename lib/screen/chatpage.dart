@@ -151,8 +151,8 @@ class _ChatpageState extends State<Chatpage> {
                           });
                     }
                     if (snap.connectionState == ConnectionState.waiting) {
-                      return CircleAvatar(
-                        backgroundColor: Colors.yellow,
+                      return Center(
+                        child: CircularProgressIndicator(),
                       );
                     }
                     return Container();
